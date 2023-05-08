@@ -1,4 +1,4 @@
-----COVID Portfolio Project - Data Exploration.sql
+--COVID-19 Portfolio Project - Data Exploration.sql
 
 --Skills used: Joins, CTE's, Temp Tables, Windows functions, Aggregate Functions, Creating views, Converting Data types
 
@@ -18,17 +18,7 @@ ORDER BY 1,2
 
 
 --Total number of cases versus the total number of deaths
----Indicates the probability of dying if one contracts COVID in Brazil
-
-SELECT location, date, new_cases, total_cases, total_deaths, 
-CASE WHEN total_cases = 0 THEN 0 ELSE (CAST(total_deaths AS FLOAT)/CAST(total_cases AS FLOAT))*100 END as death_rate
-FROM ProjetoPortfolio..covid_mortes
-WHERE location = 'Brazil' 
-ORDER BY 1, 2 
-
-
---Looking at Total Cases vs Population
----Shows what percentage of population got infected with covid
+--Indicates the probability of dying if one contracts COVID-19 in Brazil
 
 SELECT 
      location, 
@@ -41,17 +31,18 @@ WHERE location = 'Brazil'
 ORDER BY 1, 2 
 
 
+--Looking at Total Cases vs Population
 
---Looking at Countries with highest Infection Rate compared to population
-
+--Highest COVID-19 infection rate by country compared to population
 SELECT 
      location, 
 	 population, 
-     MAX(total_cases) as HighestInfectionCount,
-     Max(CAST(total_cases AS FLOAT)/CAST(population AS FLOAT))*100 as death_rate
+     MAX(CAST(total_cases AS int)) as highest_infection_count,
+     MAX(CAST(total_cases AS FLOAT)/CAST(population AS FLOAT))*100 as percent_population_infected
 FROM ProjetoPortfolio..covid_mortes
 GROUP BY location, population
-ORDER BY death_rate DESC
+HAVING location NOT IN ('World', 'High income', 'Upper middle income', 'Europe', 'Asia', 'North America', 'South America', 'Lower middle income', 'European Union')
+ORDER BY percent_population_infected DESC
 
 
 
@@ -114,7 +105,7 @@ ORDER BY 1, 2
 
 
 -- Total Population vs Vaccinations
----Rolling Vaccination Coverage by Location and Date
+--Rolling Vaccination Coverage by Location and Date
 
 Select 
      deaths.continent, 
@@ -241,7 +232,6 @@ FROM ProjetoPortfolio..covid_mortes
 WHERE location = 'Brazil'
 GROUP BY location, date
 ORDER BY location, max_new_cases DESC
-
 
  
 
